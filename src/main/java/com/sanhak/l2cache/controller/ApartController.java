@@ -1,5 +1,6 @@
 package com.sanhak.l2cache.controller;
 
+import com.sanhak.l2cache.dto.ApartAddress;
 import com.sanhak.l2cache.dto.ApartInfoData;
 import com.sanhak.l2cache.dto.LeasableArea;
 import com.sanhak.l2cache.dto.TradingHistory;
@@ -31,19 +32,18 @@ public class ApartController {
         }
     }
 
-//    @GetMapping("/find-city")
-//    public ResponseEntity<List<ApartAddress>> findGuData(@RequestParam String city) {
-//        if (city.isEmpty()) {
-//            city = "노원구";
-//        }
-//
-//        try {
-//            return ResponseEntity.ok().body(apartService.findCityAllData(city));
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//
-//    }
+    @GetMapping("/find-city")
+    public ResponseEntity<List<ApartAddress>> findGuData(@RequestParam String city) {
+        if (city.isEmpty()) {
+            city = "노원구";
+        }
+
+        try {
+            return ResponseEntity.ok().body(apartService.findCityAllData(city));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
     @GetMapping("apart-info")
     public ResponseEntity<ApartInfoData> findApartInfo(@RequestParam String apartName, @RequestParam String streetAddress) {
