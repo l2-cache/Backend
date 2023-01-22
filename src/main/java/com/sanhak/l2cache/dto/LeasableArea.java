@@ -18,4 +18,6 @@ public class LeasableArea {
     private Double priceHalfYear;
     private Double priceOneYear;
     private Double priceTwoYear;
+    private Double monthlyDeposit;
+    private Double monthlyPrice;
 }

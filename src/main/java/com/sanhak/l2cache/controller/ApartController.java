@@ -74,6 +74,8 @@ public class ApartController {
                 .priceHalfYear(7.5)
                 .priceOneYear(8.9)
                 .priceTwoYear(9.2)
+                .monthlyPrice(550000.0)
+                .monthlyDeposit(23000000.0)
                 .tradingHistories(tradingHistories1).build();
         LeasableArea leasableArea2 = LeasableArea.builder()
                 .name("거래가격")
@@ -81,6 +83,8 @@ public class ApartController {
                 .priceHalfYear(4.3)
                 .priceOneYear(4.9)
                 .priceTwoYear(7.5)
+                .monthlyDeposit(30000000.0)
+                .monthlyPrice(350000.0)
                 .tradingHistories(tradingHistories2).build();
         ApartInfoData apartInfoData = ApartInfoData.builder()
                 .apartName("개포2차현대아파트")
