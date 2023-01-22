@@ -47,6 +47,7 @@ public class ApartController {
 
     @GetMapping("apart-info")
     public ResponseEntity<ApartInfoData> findApartInfo(@RequestParam String apartName, @RequestParam String streetAddress) {
+//        return ResponseEntity.ok().body(apartService.findByApartDetailData(apartName,streetAddress));
         System.out.println("apartName = " + apartName);
         System.out.println("streetAddress = " + streetAddress);
         List<TradingHistory> tradingHistories1 = List.of(
@@ -70,10 +71,16 @@ public class ApartController {
         LeasableArea leasableArea1 = LeasableArea.builder()
                 .name("거래가격")
                 .area(59.95)
+                .priceHalfYear(7.5)
+                .priceOneYear(8.9)
+                .priceTwoYear(9.2)
                 .tradingHistories(tradingHistories1).build();
         LeasableArea leasableArea2 = LeasableArea.builder()
                 .name("거래가격")
                 .area(47.57)
+                .priceHalfYear(4.3)
+                .priceOneYear(4.9)
+                .priceTwoYear(7.5)
                 .tradingHistories(tradingHistories2).build();
         ApartInfoData apartInfoData = ApartInfoData.builder()
                 .apartName("개포2차현대아파트")

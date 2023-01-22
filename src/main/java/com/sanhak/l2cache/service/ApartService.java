@@ -1,21 +1,28 @@
 package com.sanhak.l2cache.service;
 
 import com.sanhak.l2cache.dto.ApartAddress;
+import com.sanhak.l2cache.dto.ApartInfoData;
+import com.sanhak.l2cache.dto.LeasableArea;
+import com.sanhak.l2cache.dto.TradingHistory;
 import com.sanhak.l2cache.entity.ApartEntity;
+import com.sanhak.l2cache.entity.LeasableAreaEntity;
+import com.sanhak.l2cache.entity.TradingHistoryEntity;
 import com.sanhak.l2cache.repository.ApartRepository;
+import com.sanhak.l2cache.repository.TradingHistoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ApartService {
 
     private final ApartRepository apartRepository;
-//    private final ApartAddressRepository apartAddressRepository;
+    private final TradingHistoryRepository tradingHistoryRepository;
 
     public List<ApartEntity> findAllData() {
         List<ApartEntity> result = apartRepository.findAll();
@@ -47,6 +54,56 @@ public class ApartService {
             throw new NoSuchElementException("DB에 데이터가 없습니다.");
         }
 
+        return result;
+    }
+
+    public ApartInfoData findByApartDetailData(String apartName, String streetAddress) {
+        ApartEntity findData = apartRepository.findByApartNameAndStreetAddress(apartName, streetAddress)
+                .orElseThrow(() -> new NoSuchElementException("DB에 데이터가 없습니다."));
+
+
+        return ApartInfoData.builder()
+                .apartName(apartName)
+                .fullAddress("서울특별시 " + findData.getCity() + " " + findData.getDong() + " " + findData.getStreetAddress())
+                .netLeasableAreas(getNetLeasableAreas(findData.getLeasableAreas()))
+                .tradingHistories(getLeasableAreaDto(findData,findData.getLeasableAreas()))
+                .build();
+    }
+
+    public List<Double> getNetLeasableAreas(List<LeasableAreaEntity> leasableAreas) {
+        List<Double> result = new ArrayList<>();
+
+        for (LeasableAreaEntity leasableArea : leasableAreas) {
+            result.add(leasableArea.getLeasableArea());
+        }
+        return result;
+    }
+
+    public List<LeasableArea> getLeasableAreaDto(ApartEntity apart, List<LeasableAreaEntity> leasableAreas) {
+        List<LeasableArea> result = new ArrayList<>();
+
+        for (LeasableAreaEntity leasableArea : leasableAreas) {
+            result.add(LeasableArea.builder()
+                    .name("거래가격")
+                    .area(leasableArea.getLeasableArea())
+                    .tradingHistories(getTradingHistory(apart, leasableArea))
+                    .build());
+        }
+        return result;
+    }
+
+    public List<TradingHistory> getTradingHistory(ApartEntity apart, LeasableAreaEntity leasableArea) {
+        List<TradingHistory> result = new ArrayList<>();
+
+        List<TradingHistoryEntity> findData = tradingHistoryRepository.findByLeasableAreaAndAndApart(leasableArea,apart);
+
+        for (TradingHistoryEntity data : findData) {
+            result.add(TradingHistory.builder()
+                    .date(data.getContractDate())
+                    .price(Math.round(data.getContractPrice() / 10000.0 * 100) / 100.0)
+                    .build()
+            );
+        }
         return result;
     }
 }

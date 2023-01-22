@@ -15,4 +15,7 @@ public class LeasableArea {
     private List<TradingHistory> tradingHistories;
     private String name = "거래가격";
     private Double area;
+    private Double priceHalfYear;
+    private Double priceOneYear;
+    private Double priceTwoYear;
 }
