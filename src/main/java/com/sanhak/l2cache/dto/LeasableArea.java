@@ -20,4 +20,6 @@ public class LeasableArea {
     private Double priceTwoYear;
     private Double monthlyDeposit;
     private Double monthlyPrice;
+    private Double predictMonthlyDeposit;
+    private Double predictMonthlyPrice;
 }
