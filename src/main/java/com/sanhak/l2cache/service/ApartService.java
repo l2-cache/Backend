@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -86,6 +85,14 @@ public class ApartService {
             result.add(LeasableArea.builder()
                     .name("거래가격")
                     .area(leasableArea.getLeasableArea())
+                    .predictMonthlyPrice(leasableArea.getAverageMonthlyRentPrice())
+                            .priceHalfYear(leasableArea.getPriceHalfYear())
+                            .priceOneYear(leasableArea.getPriceOneYear())
+                            .priceTwoYear(leasableArea.getPriceTwoYear())
+                            .monthlyDeposit(leasableArea.getAverageMonthlyDeposit())
+                            .monthlyPrice(leasableArea.getAverageMonthlyRentPrice())
+                            .predictMonthlyDeposit(leasableArea.getEstimateMonthlyDeposit())
+                            .predictMonthlyPrice(leasableArea.getEstimateMonthlyRentPrice())
                     .tradingHistories(getTradingHistory(apart, leasableArea))
                     .build());
         }
