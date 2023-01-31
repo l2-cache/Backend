@@ -40,6 +40,12 @@ public class LeasableAreaEntity {
     @Column(name = "average_monthly_deposit")
     private Double averageMonthlyDeposit;
 
+    @Column(name = "estimate_monthly_deposit")
+    private Double estimateMonthlyDeposit;
+
+    @Column(name = "estimate_monthly_rent_price")
+    private Double estimateMonthlyRentPrice;
+
     @Column(name = "profit")
     private Double profit;
 
