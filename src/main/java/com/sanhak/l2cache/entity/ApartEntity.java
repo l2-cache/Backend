@@ -51,6 +51,9 @@ public class ApartEntity {
     @Column(name = "average_monthly_deposit")
     private Double averageMonthlyDeposit;
 
+    @Column(name = "profit")
+    private Double profit;
+
     @OneToMany(mappedBy = "apart")
     private List<LeasableAreaEntity> leasableAreas;
 
