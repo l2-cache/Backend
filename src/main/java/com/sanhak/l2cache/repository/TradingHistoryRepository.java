@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface TradingHistoryRepository extends JpaRepository<TradingHistoryEntity, Long> {
     List<TradingHistoryEntity> findByLeasableAreaAndAndApart(LeasableAreaEntity leasableArea, ApartEntity apart);
+    TradingHistoryEntity findTopByLeasableAreaOrderByContractDateDesc(LeasableAreaEntity leasableArea);
 }

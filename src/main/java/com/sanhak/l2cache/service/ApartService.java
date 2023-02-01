@@ -1,13 +1,11 @@
 package com.sanhak.l2cache.service;
 
-import com.sanhak.l2cache.dto.ApartAddress;
-import com.sanhak.l2cache.dto.ApartInfoData;
-import com.sanhak.l2cache.dto.LeasableArea;
-import com.sanhak.l2cache.dto.TradingHistory;
+import com.sanhak.l2cache.dto.*;
 import com.sanhak.l2cache.entity.ApartEntity;
 import com.sanhak.l2cache.entity.LeasableAreaEntity;
 import com.sanhak.l2cache.entity.TradingHistoryEntity;
 import com.sanhak.l2cache.repository.ApartRepository;
+import com.sanhak.l2cache.repository.LeasableAreaRepository;
 import com.sanhak.l2cache.repository.TradingHistoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ public class ApartService {
 
     private final ApartRepository apartRepository;
     private final TradingHistoryRepository tradingHistoryRepository;
+    private final LeasableAreaRepository leasableAreaRepository;
 
     public List<ApartEntity> findAllData() {
         List<ApartEntity> result = apartRepository.findAll();
@@ -65,7 +64,7 @@ public class ApartService {
                 .apartName(apartName)
                 .fullAddress("서울특별시 " + findData.getCity() + " " + findData.getDong() + " " + findData.getStreetAddress())
                 .netLeasableAreas(getNetLeasableAreas(findData.getLeasableAreas()))
-                .tradingHistories(getLeasableAreaDto(findData,findData.getLeasableAreas()))
+                .tradingHistories(getLeasableAreaDto(findData, findData.getLeasableAreas()))
                 .build();
     }
 
@@ -86,13 +85,13 @@ public class ApartService {
                     .name("거래가격")
                     .area(leasableArea.getLeasableArea())
                     .predictMonthlyPrice(leasableArea.getAverageMonthlyRentPrice())
-                            .priceHalfYear(leasableArea.getPriceHalfYear())
-                            .priceOneYear(leasableArea.getPriceOneYear())
-                            .priceTwoYear(leasableArea.getPriceTwoYear())
-                            .monthlyDeposit(leasableArea.getAverageMonthlyDeposit())
-                            .monthlyPrice(leasableArea.getAverageMonthlyRentPrice())
-                            .predictMonthlyDeposit(leasableArea.getEstimateMonthlyDeposit())
-                            .predictMonthlyPrice(leasableArea.getEstimateMonthlyRentPrice())
+                    .priceHalfYear(leasableArea.getPriceHalfYear())
+                    .priceOneYear(leasableArea.getPriceOneYear())
+                    .priceTwoYear(leasableArea.getPriceTwoYear())
+                    .monthlyDeposit(leasableArea.getAverageMonthlyDeposit())
+                    .monthlyPrice(leasableArea.getAverageMonthlyRentPrice())
+                    .predictMonthlyDeposit(leasableArea.getEstimateMonthlyDeposit())
+                    .predictMonthlyPrice(leasableArea.getEstimateMonthlyRentPrice())
                     .tradingHistories(getTradingHistory(apart, leasableArea))
                     .build());
         }
@@ -102,7 +101,7 @@ public class ApartService {
     public List<TradingHistory> getTradingHistory(ApartEntity apart, LeasableAreaEntity leasableArea) {
         List<TradingHistory> result = new ArrayList<>();
 
-        List<TradingHistoryEntity> findData = tradingHistoryRepository.findByLeasableAreaAndAndApart(leasableArea,apart);
+        List<TradingHistoryEntity> findData = tradingHistoryRepository.findByLeasableAreaAndAndApart(leasableArea, apart);
 
         for (TradingHistoryEntity data : findData) {
             result.add(TradingHistory.builder()
@@ -112,5 +111,26 @@ public class ApartService {
             );
         }
         return result;
+    }
+
+    public List<Profit> findProfit() {
+        List<LeasableAreaEntity> rankings = leasableAreaRepository.findTop15ByOrderByProfitDesc();
+        List<Profit> result = new ArrayList<>();
+        for (LeasableAreaEntity ranking : rankings) {
+            TradingHistoryEntity tradingData = tradingHistoryRepository.findTopByLeasableAreaOrderByContractDateDesc(ranking);
+            result.add(
+                    Profit.builder()
+                            .profit(ranking.getProfit())
+                            .leasableArea(ranking.getLeasableArea())
+                            .address(convertFullAddress(ranking.getApart()))
+                            .price(tradingData.getContractPrice())
+                            .build()
+            );
+        }
+        return result;
+    }
+
+    private String convertFullAddress(ApartEntity apart) {
+        return apart.getCity() + " " + apart.getDong() + " " + apart.getStreetAddress() + " " + apart.getApartName();
     }
 }

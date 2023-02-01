@@ -1,9 +1,6 @@
 package com.sanhak.l2cache.controller;
 
-import com.sanhak.l2cache.dto.ApartAddress;
-import com.sanhak.l2cache.dto.ApartInfoData;
-import com.sanhak.l2cache.dto.LeasableArea;
-import com.sanhak.l2cache.dto.TradingHistory;
+import com.sanhak.l2cache.dto.*;
 import com.sanhak.l2cache.entity.ApartEntity;
 import com.sanhak.l2cache.service.ApartService;
 import lombok.AllArgsConstructor;
@@ -22,6 +19,11 @@ import java.util.List;
 public class ApartController {
 
     private final ApartService apartService;
+
+    @GetMapping("/profit")
+    public ResponseEntity<List<Profit>> findProfit() {
+        return ResponseEntity.ok().body(apartService.findProfit());
+    }
 
     @GetMapping("/find-all")
     public ResponseEntity<List<ApartEntity>> findAllData() {
